@@ -2,28 +2,31 @@
 
 namespace BookAppointment
 {
-    public enum pincode { N2E3K2 = 0, N1E3k2, N3R2K6}
     class Program
     {
-        public static string[] BookAppoint(int age_category)
+        public static string[] BookAppoint(int age)
         {
+            int age_category = 0;
             string[] locations = { "1.Region of Waterloo Public Health website", "2.A participating pharmacy", "3.Walmart pharmac", "1.Wellington-Dufferin-Guelph Health Unit website", "2.A participating pharmacy", "3.Shopper’s Drug Mar", "1.Brant County Health Unit website", "2.A participating pharmac", "3.ABC pharmacy" };
             string[] return_locations = {"0","0","0" };
+            if (age >= 31)
+                age_category = 2;
+            else if (age >= 19)
+                age_category = 1;     
+            else
+                age_category = 0;
             int j = 3 * age_category;
             for(int i = 0; i < 3; i++)
             {
                 return_locations[i] = locations[j];
                 j++;
             }
-            //string pincode1 = Enum.GetName(typeof(pincode), age_category);
-
-            //return pincode1;
             return return_locations;
 
         }
         static void Main(string[] args)
         {
-            int dose = 0, valid_choice = 0, birth_year = 0, age_category = 0;
+            int dose = 0, valid_choice = 0, birth_year = 0, age_category = 0, age=0;
             do
             {
                 Console.WriteLine("You want to book for my:\n1.First Dose\n2.Second Dose");
@@ -47,15 +50,12 @@ namespace BookAppointment
 
             do
             {
-                Console.WriteLine("Please Enter you pincode");
-                string pincode1 = Console.ReadLine();
-
                 Console.WriteLine("Please enter your Birth year");
                 var birth_year1 = Console.ReadLine();
                 bool age_check = int.TryParse(birth_year1, out birth_year);
                 if(age_check == true)
                 {
-                    int age = 2021 - birth_year;
+                    age = 2021 - birth_year;
                     if (birth_year < 1900)
                     {
                         Console.WriteLine("Invalid birth year. Please try again.");
@@ -70,31 +70,39 @@ namespace BookAppointment
                     }
                     else
                     {
-                        if (age >= 31)
+                        valid_choice = 0;
+                        int pin_choice = 1;
+                        do
                         {
-                            age_category = 2;
-                            valid_choice = 0;
-                        }
-                        else if(age >= 19)
-                        {
-                            age_category = 1;
-                            valid_choice = 0;
-                        }
-                        else
-                        {
-                            age_category = 0;
-                            valid_choice = 0;
-                        }
-                    }
+                            Console.WriteLine("Please Enter Pincode");
+                            string pincode = Console.ReadLine();
 
+                            if (age >= 31 && pincode == "N3E 3K2")
+                            {
+                                pin_choice = 0;
+                                break;
+                            }
+                            else if (age >= 19 && age <=30 && pincode == "N1E 3K2")
+                            {
+                                pin_choice = 0;
+                                break;
+                            }
+                            else if (age >= 12 && pincode == "N2E 3K2")
+                            {
+                                pin_choice = 0;
+                                break;
+                            }
+                            else
+                                Console.WriteLine("We could not match your postal code to a public health unit. Try entering the postal code again.");
+
+                        } while (pin_choice == 1);
+                    }
                 }
-            } while (valid_choice == 1);
+            } while (valid_choice == 1);            
 
             if (age_category < 3)
             {
-                String[] return_locations = Program.BookAppoint(age_category);
-                string pincode = Enum.GetName(typeof(pincode), age_category);
-                Console.WriteLine("Pincode: ", pincode);
+                String[] return_locations = Program.BookAppoint(age);
                 for (int i = 0; i < return_locations.Length; i++)
                 {
                     Console.WriteLine(return_locations[i]);
